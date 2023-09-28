@@ -1,0 +1,8 @@
+0000000000000000000000000000000000000000 2362a560c40a967fa2288c73abc164df5cf94e89 Brady Baker <bradysamuelbaker@gmail.com> 1690166188 -0700	commit (initial): Beta Version of Arduino Code For LED Canvas
+2362a560c40a967fa2288c73abc164df5cf94e89 bd84158715afa0d1051c46105b8f661713c4d1a2 Brady Baker <bradysamuelbaker@gmail.com> 1690249624 -0700	commit: Added error handling corrupted char, audio visualizer stuff
+bd84158715afa0d1051c46105b8f661713c4d1a2 bc4102d3204487f9d38800730b75d0311dcd4999 Brady Baker <bradysamuelbaker@gmail.com> 1691128601 -0700	commit: Added bug fixes and ability to select color palettes
+bc4102d3204487f9d38800730b75d0311dcd4999 5177d7a1bc53f8af96f3b77606bc27546901b426 Brady Baker <bradysamuelbaker@gmail.com> 1691527467 -0700	commit: Shrunk code
+5177d7a1bc53f8af96f3b77606bc27546901b426 5177d7a1bc53f8af96f3b77606bc27546901b426 Brady Baker <bradysamuelbaker@gmail.com> 1691527509 -0700	checkout: moving from master to audioVisualizer-update
+5177d7a1bc53f8af96f3b77606bc27546901b426 3d9adea46a415b9daf691937420f2b965849a985 Brady Baker <bradysamuelbaker@gmail.com> 1691542148 -0700	commit: Fixed hex to rgb glitch
+3d9adea46a415b9daf691937420f2b965849a985 67dba44363b6d169c48d03a1bfaff06127084406 Brady Baker <bradysamuelbaker@gmail.com> 1691548235 -0700	commit: Added brightness selector and audioVisualizer pixelFall setting
+67dba44363b6d169c48d03a1bfaff06127084406 51fca0bb6cac2c7e859a61560c80834e0fab939a Brady Baker <bradysamuelbaker@gmail.com> 1691551467 -0700	commit: Animation speed working
