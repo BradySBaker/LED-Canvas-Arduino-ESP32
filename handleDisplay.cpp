@@ -11,7 +11,7 @@ bool displayFrame(String dir) {
   }
   
   // Loop through all the pixels on the LED panel
-  for (int i = 0; i < 256; i++) {
+  for (int i = 0; i < 600; i++) {
     // Read the color from the file as a 32-bit integer
     uint32_t color;
     file.read((uint8_t*)&color, sizeof(color));
@@ -23,12 +23,15 @@ bool displayFrame(String dir) {
     leds[i].r = r;
     leds[i].g = g;
     leds[i].b = b;
+    
   }
   
   // Close the colors file
   file.close();
   // Update the LED panel with the new colors
   FastLED.show();
+  pCharacteristic->setValue("success");
+  pCharacteristic->notify();
   return true;
 }
 

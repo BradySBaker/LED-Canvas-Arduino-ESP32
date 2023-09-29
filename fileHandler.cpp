@@ -6,6 +6,10 @@ void handleFrameSave(char charBuffer[20], bool animation) {
   strcpy(nameString, &charBuffer[1]);
   String fileName;
   String dirName;
+  if (!SD.exists("/anims")) {
+    SD.mkdir("/anims");
+    Serial.println("Created directory /anims");
+  }
   if (!SD.exists("/anims/" + String(nameString)) && animation) { //Handle animation
     dirName = "/anims/" + String(nameString);
     fileName = "1.TXT";
@@ -25,6 +29,10 @@ void handleFrameSave(char charBuffer[20], bool animation) {
   } else { //Handle single drawing
     fileName = String(nameString) + ".TXT"; 
     dirName = "/drawings";
+    if (!SD.exists(dirName)) {
+      SD.mkdir(dirName);
+      Serial.println("Created directory /drawings");
+    }
     Serial.print("New File: ");
     Serial.println(fileName);
   }
@@ -36,7 +44,7 @@ void handleFrameSave(char charBuffer[20], bool animation) {
     pCharacteristic->notify();
     return;
   }
-  for (int i = 0; i < 256; i++) {
+  for (int i = 0; i < 600; i++) {
     CRGB color = leds[i];
     uint32_t hexColor = ((uint32_t)color.r << 16) | ((uint32_t)color.g << 8) | (uint32_t)color.b;
     file.write((uint8_t*)&hexColor, sizeof(hexColor));
@@ -114,6 +122,7 @@ int readFileCount(String directory) {
 
 void sendFileNames(String dir, bool anims) {
   File root = SD.open(dir);
+
   while (true) {
       File file = root.openNextFile();
       if (!file) {
@@ -121,14 +130,14 @@ void sendFileNames(String dir, bool anims) {
       }
       char fileName[11]; // maximum length of file name + extension
       strcpy(fileName, file.name()); // copy the file name to a new char array
-      int extensionIndex = strlen(fileName) - 4; // find the position of the start of the extension
-      if (!anims) {
-        fileName[extensionIndex] = '\0'; // add a null terminator to the end of the new string
-      }
       if (anims) {
-        // bluetooth.print("." + String(fileName) + ",");
+        String valueToSend = "." + String(fileName) + ",";
+        pCharacteristic->setValue(valueToSend.c_str());
+        pCharacteristic->notify();
       } else {
-        // bluetooth.print(String(fileName) + ",");
+        String valueToSend = String(fileName) + ",";
+        pCharacteristic->setValue(valueToSend.c_str());
+        pCharacteristic->notify();
       }
       Serial.println(fileName);
       file.close();

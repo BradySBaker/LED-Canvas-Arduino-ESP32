@@ -6,16 +6,19 @@
 #define SAMPLES 64
 #define SAMPLING_FREQ   10000
 unsigned long newTime;
-#define AMPLITUDE 100 // Increased amplitude for lower frequencies
+#define AMPLITUDE 70 // Increased amplitude for lower frequencies
 int bandValues[30];
 double vReal[SAMPLES];
 double vImag[SAMPLES];
-#define NOISE        100 // Increased noise threshold
+#define NOISE        200 // Increased noise threshold
 unsigned int sampling_period_us;
 arduinoFFT FFT = arduinoFFT(vReal, vImag, SAMPLES, SAMPLING_FREQ);
 int fallingPixels[30];
 
 bool initializationDone = false;
+
+int frequencyBins[] = {2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
+
 
 COLORS interpolateColor(const COLORS& startColor, const COLORS& endColor, float progress) {
   COLORS result;
@@ -41,10 +44,10 @@ void drawFallingPixel(int barHeight, int x) {
     fallingPixels[x]--;
   }
   if (fallingPixels[x] > 0) {
-    const int fallPos =  pgm_read_word(&LED_MAP[(HEIGHT - 1) - fallingPixels[x]][x]);
-    leds[fallPos].r = paletteColors[curColorLength].r;
-    leds[fallPos].g = paletteColors[curColorLength].g;
-    leds[fallPos].b = paletteColors[curColorLength].b;
+    const int fallPos =  pgm_read_word(&LED_MAP[(HEIGHT - 1) - fallingPixels[x]][x]); 
+    leds[fallPos].r = paletteColors[curColorLength-1].r;
+    leds[fallPos].g = paletteColors[curColorLength-1].g;
+    leds[fallPos].b = paletteColors[curColorLength-1].b;
   }
 }
 
@@ -73,8 +76,6 @@ void audioVisualizer(bool pixelFall) {
   FFT.Compute(FFT_FORWARD);
   FFT.ComplexToMagnitude();
   
-int frequencyBins[] = {2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32};
-
   for (int i = 0; i < WIDTH; i++) {
     bandValues[i] = 0;
   }
@@ -92,8 +93,8 @@ int frequencyBins[] = {2, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 
   FastLED.clear();
   for (byte x = 0; x < WIDTH; x++) {
     // Scale the bars for the display
-    int barHeight = bandValues[x] / AMPLITUDE;
-    for (byte y = 0; y < barHeight; y++) {
+    int barHeight = max(0, min(bandValues[x] / AMPLITUDE, 21));
+    for (byte y = 1; y < barHeight; y++) {
       const int curPos = pgm_read_word(&LED_MAP[HEIGHT - y][x]);
       float progress = static_cast<float>(y) / static_cast<float>(barHeight);
       progress *= progress;

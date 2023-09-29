@@ -1,7 +1,7 @@
 #include "BlueFunctions.h"
 
 #define LEDPIN 12
-const int chipSelect = 53;
+const int chipSelect = 5;
 
 CRGB leds[WIDTH * HEIGHT];
 
@@ -119,7 +119,7 @@ void runBLEServer() {
   BLEDescriptor* pStatusDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2902));
   pCharacteristic->addDescriptor(pStatusDescriptor);
   pStatusDescriptor->setValue("Notify");
-
+  delay(100);
   // Start the service
   pService->start();
 
@@ -127,6 +127,7 @@ void runBLEServer() {
   BLEAdvertising *pAdvertising = pServer->getAdvertising();
   pAdvertising->addServiceUUID(pService->getUUID());
   pAdvertising->start();
+  delay(50);
   Serial.println("BLE advertising started");
 
 }
@@ -138,7 +139,7 @@ void runAudioVisualizer(void *parameter) {
          audioVisualizer(true);
       }
       // Adjust the task delay based on your desired update rate
-      vTaskDelay(pdMS_TO_TICKS(10)); // Example: Update every 10 milliseconds
+      vTaskDelay(pdMS_TO_TICKS(15)); // Example: Update every 10 milliseconds
    }
 }
 
@@ -165,6 +166,8 @@ void setup() { //Setup ---------------------------------------------------------
   randomSeed(analogRead(0));
   if (!SD.begin(chipSelect)) {
     Serial.println("SD card initialization failed!");
+  } else {
+    Serial.println("SD card intialized");
   }
 }
 void loop() {

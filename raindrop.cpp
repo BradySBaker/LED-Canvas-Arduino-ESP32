@@ -19,9 +19,9 @@ void raindrop() {
 
   for (int i = 0; i < raindropAmount; i++) {
     rainDrops[i][0] = 0; //Y position 
-    rainDrops[i][1] = random(0, 16); //X position
+    rainDrops[i][1] = random(0, WIDTH); //X position
     rainDrops[i][2] = 0; //Time
-    rainDrops[i][3] = random(0, 16); //Execution Time
+    rainDrops[i][3] = random(0, HEIGHT); //Execution Time
     rainDrops[i][4] = random(0, curColorLength + 1); //Color index
 
     rainDrops[i][5] = 0;
@@ -62,13 +62,13 @@ void raindrop() {
 
 
       //If rainDrop hit ground
-      if (rainDrops[j][0] >= 15) {
+      if (rainDrops[j][0] >= HEIGHT-1) {
         rainDrops[j][5]++;
         //If ground animation done playing
-        if (rainDrops[j][5] >= 15) {
+        if (rainDrops[j][5] >= HEIGHT-1) {
           rainDrops[j][2] = 0;
           rainDrops[j][0] = 0;
-          rainDrops[j][1] = random(0, 16);
+          rainDrops[j][1] = random(0, WIDTH);
           rainDrops[j][5] = 0;
           rainDrops[j][6] = raindropSpeed;
         } else {
