@@ -66,7 +66,7 @@ void handleBluetooth(std::string data) {
         pCharacteristic->setValue("FRAME");
         pCharacteristic->notify();
       } else {
-        displayFrame("/drawings/" + String(nameString) + ".TXT");
+        displayFrame("/drawings/" + String(nameString));
       }
     } else if (strstr(charBuffer, "names") == &charBuffer[0]) { //Handle retrieve frame ammount
       Colors = COLORS(200, 200, 200);

@@ -12,7 +12,7 @@ void handleFrameSave(char charBuffer[20], bool animation) {
   }
   if (!SD.exists("/anims/" + String(nameString)) && animation) { //Handle animation
     dirName = "/anims/" + String(nameString);
-    fileName = "1.TXT";
+    fileName = "1";
     // Create a new folder
     if (SD.mkdir(dirName)) {
       Serial.println(String(nameString) + " created at: " + dirName);
@@ -24,25 +24,27 @@ void handleFrameSave(char charBuffer[20], bool animation) {
     }
   } else if (animation) {
     dirName = "/anims/" + String(nameString);
-    fileName = String(readFileCount(dirName) + 1) + ".TXT";
+    fileName = String(readFileCount(dirName) + 1);
     Serial.println("File saved to " + dirName + "/" + fileName);
   } else { //Handle single drawing
-    fileName = String(nameString) + ".TXT"; 
+    fileName = String(nameString); 
     dirName = "/drawings";
     if (!SD.exists(dirName)) {
       SD.mkdir(dirName);
       Serial.println("Created directory /drawings");
     }
-    Serial.print("New File: ");
-    Serial.println(fileName);
   }
 
   File file = SD.open(dirName + "/" + fileName, FILE_WRITE);
+  Serial.println(dirName + "/" + fileName);
   if (!file) {
     Serial.println("File creation failed!");
     pCharacteristic->setValue("failed");
     pCharacteristic->notify();
     return;
+  } else {
+    Serial.print("New File: ");
+    Serial.println(fileName);
   }
   for (int i = 0; i < 600; i++) {
     CRGB color = leds[i];
@@ -62,7 +64,7 @@ void handleFrameDelete(char charBuffer[20]) {
   
 
 
-  if (SD.remove("/drawings/" + String(nameString) + ".TXT")) {
+  if (SD.remove("/drawings/" + String(nameString) + "")) {
     Serial.println("File deleted: " + String(nameString));
       pCharacteristic->setValue("success");
       pCharacteristic->notify();

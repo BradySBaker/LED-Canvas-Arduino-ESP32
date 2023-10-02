@@ -131,15 +131,18 @@ void runBLEServer() {
   Serial.println("BLE advertising started");
 
 }
-TaskHandle_t audioVisualizerTaskHandle = NULL;
+// Function handlers -------------------------
+TaskHandle_t ModeTaskHandle = NULL;
 
-void runAudioVisualizer(void *parameter) {
+void runMode(void *parameter) {
    while (1) {
       if (avActive) {
          audioVisualizer(true);
       }
-      // Adjust the task delay based on your desired update rate
-      vTaskDelay(pdMS_TO_TICKS(15)); // Example: Update every 10 milliseconds
+      if (playingAnim != "~") {
+        handleAnimPlay();
+      }
+      vTaskDelay(pdMS_TO_TICKS(1));
    }
 }
 
@@ -149,13 +152,13 @@ void setup() { //Setup ---------------------------------------------------------
   runBLEServer();
 
   xTaskCreatePinnedToCore(
-    runAudioVisualizer,
-    "AudioVisualizerTask",
+    runMode,
+    "ModeTask",
     10000,
     NULL,
-    2, // Higher priority
-    &audioVisualizerTaskHandle,
-    0 // Assign to Core 1
+    0,
+    &ModeTaskHandle,
+    0 
   );
   vTaskStartScheduler();
 
@@ -171,7 +174,4 @@ void setup() { //Setup ---------------------------------------------------------
   }
 }
 void loop() {
-  if (playingAnim != "~") {
-    handleAnimPlay();
-  }
 }

@@ -37,7 +37,7 @@ bool displayFrame(String dir) {
 
 bool isValidInput(const String& input) {
     for (size_t i = 0; i < input.length(); i++) {
-        if (!isdigit(input.charAt(i)) && input.charAt(i) != '\r') {
+        if (!isdigit(input.charAt(i))) {
             return false; 
         }
     }
@@ -45,7 +45,6 @@ bool isValidInput(const String& input) {
 }
 
 void handleDraw(char charBuffer[20]) {
-  // Serial.println(charBuffer);
   String positions[3] = {};
   int idx = 0;
   char* charPos = strtok(charBuffer, "P");
@@ -76,9 +75,14 @@ void handleDraw(char charBuffer[20]) {
 
 
 void handleAnimPlay() {
-  String dirName = "/anims/" + playingAnim + "/";
+  String dirName = "/anims/" + playingAnim;
 
   int result = 0;
+  if (!SD.exists(dirName) ) {
+    Serial.println("Directory does not exist");
+    playingAnim = "~";
+    return;
+  }
   File dir = SD.open(dirName);
   while (true) {
     File file = dir.openNextFile();
@@ -86,7 +90,7 @@ void handleAnimPlay() {
       break; // No more files
     }
     result++;
-    if (!displayFrame(dirName + String(result) + ".TXT")) {
+    if (!displayFrame(dirName + "/" + String(result))) {
       return;
     };
     file.close();
