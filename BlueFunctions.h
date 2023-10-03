@@ -43,6 +43,8 @@ extern COLORS Colors;
 
 extern String playingAnim;
 
+extern bool runningFunction;
+
 //Raindrop vars
 extern bool raining;
 extern int raindropAmount;

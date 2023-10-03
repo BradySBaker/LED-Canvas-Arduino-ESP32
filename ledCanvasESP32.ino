@@ -13,6 +13,8 @@ BLEServer *pServer;
 BLEService *pService;
 BLECharacteristic *pCharacteristic;
 
+bool runningFunction = false;
+
 COLORS hexToRGB(const char* hexColorString) {
   COLORS result;
   unsigned long colorInt = 0;
@@ -136,13 +138,15 @@ TaskHandle_t ModeTaskHandle = NULL;
 
 void runMode(void *parameter) {
    while (1) {
-      if (avActive) {
-         audioVisualizer(true);
-      }
+    if (!runningFunction) {
       if (playingAnim != "~") {
         handleAnimPlay();
       }
-      vTaskDelay(pdMS_TO_TICKS(1));
+      if (avActive) {
+         audioVisualizer(true);
+      }
+    }
+    vTaskDelay(pdMS_TO_TICKS(15));
    }
 }
 
@@ -158,7 +162,7 @@ void setup() { //Setup ---------------------------------------------------------
     NULL,
     0,
     &ModeTaskHandle,
-    0 
+    0
   );
   vTaskStartScheduler();
 

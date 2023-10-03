@@ -53,6 +53,7 @@ void drawFallingPixel(int barHeight, int x) {
 
 
 void audioVisualizer(bool pixelFall) {
+  runningFunction = true;
   if (!initializationDone) {
     resetPixels();
     sampling_period_us = round(1000000 * (1.0 / SAMPLING_FREQ));
@@ -108,4 +109,5 @@ void audioVisualizer(bool pixelFall) {
     }
   }
   FastLED.show();
+  runningFunction = false;
 }

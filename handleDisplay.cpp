@@ -23,9 +23,7 @@ bool displayFrame(String dir) {
     leds[i].r = r;
     leds[i].g = g;
     leds[i].b = b;
-    
   }
-  
   // Close the colors file
   file.close();
   // Update the LED panel with the new colors
@@ -75,6 +73,7 @@ void handleDraw(char charBuffer[20]) {
 
 
 void handleAnimPlay() {
+  runningFunction = true;
   String dirName = "/anims/" + playingAnim;
 
   int result = 0;
@@ -97,6 +96,7 @@ void handleAnimPlay() {
     delay(animSpeed);
   }
   dir.close();
+  runningFunction = false;
 }
 
 
