@@ -5,8 +5,7 @@ bool displayFrame(String dir) {
   File file = SD.open(dir);
   if (!file) {
     Serial.println("File open failed!");
-    pCharacteristic->setValue("failed");
-    pCharacteristic->notify();
+    bluetooth.print("failed");
     return false;
   }
   
@@ -57,8 +56,7 @@ void handleDraw(char charBuffer[20]) {
     String y = positions[i].substring(commaPos + 1);
     if (!isValidInput(x) || !isValidInput(y)) {
         Serial.println("Invalid input value");
-        pCharacteristic->setValue("INVALID");
-        pCharacteristic->notify();
+        bluetooth.print("INVALID");
         return;
     }
     int curPos = pgm_read_word(&LED_MAP[x.toInt()][y.toInt()]);
@@ -67,8 +65,7 @@ void handleDraw(char charBuffer[20]) {
     leds[curPos].b = Colors.b;
   }
   FastLED.show();
-  pCharacteristic->setValue("successful");
-  pCharacteristic->notify();
+  bluetooth.print("success");
 }
 
 
@@ -106,13 +103,11 @@ void handleColorChange(char charBuffer[20], bool rainAudio) {
       strcpy(hexColorString, &charBuffer[2]); //2 = cm
       paletteColors[curColorLength] = hexToRGB(hexColorString);
       curColorLength++;
-      pCharacteristic->setValue("CM");
-      pCharacteristic->notify();
+      bluetooth.print("CM");
   } else {
       strcpy(hexColorString, &charBuffer[1]); //1 = c
       Colors = hexToRGB(hexColorString);
       Serial.println(hexColorString);
-      pCharacteristic->setValue("success");
-      pCharacteristic->notify();
+      bluetooth.print("success");
   }
 }

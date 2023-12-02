@@ -1,16 +1,13 @@
 #ifndef BLUE_FUNCTIONS_H
 #define BLUE_FUNCTIONS_H
 
+#include <SoftwareSerial.h>
 #include "FastLED.h"
 #include "colors.h"
 #include <string.h>
 #include "ledMatrix.h"
 #include <SD.h>
 #include <SPI.h>
-#include <BLEDevice.h>
-#include <BLEServer.h>
-#include <BLEUtils.h>
-#include <BLE2902.h>
 
 
 #define WIDTH 30
@@ -20,7 +17,7 @@
 
 bool displayFrame(String dir);
 void handleColorChange(char charBuffer[20], bool rain);
-void handleBluetooth(std::string data);
+void handleBluetooth();
 void handleDraw(char charBuffer[20]);
 void handleAnimPlay();
 void handleFrameSave(char charBuffer[20], bool animation);
@@ -39,6 +36,8 @@ void audioVisualizer(bool pixelFall);
 
 extern CRGB leds[600];
 
+extern SoftwareSerial bluetooth;
+
 extern COLORS Colors;
 
 extern String playingAnim;
@@ -54,8 +53,5 @@ extern String background;
 extern int animSpeed;
 //AV vars
 extern bool avActive;
-
-//bluetooth vars
-extern BLECharacteristic *pCharacteristic;
 
 #endif

@@ -3,15 +3,13 @@
 #define LEDPIN 12
 const int chipSelect = 5;
 
+SoftwareSerial bluetooth(16, 17);
+
 CRGB leds[WIDTH * HEIGHT];
 
 COLORS Colors(200, 200, 200);
 
 String playingAnim = "~";
-
-BLEServer *pServer;
-BLEService *pService;
-BLECharacteristic *pCharacteristic;
 
 bool runningFunction = false;
 
@@ -70,112 +68,24 @@ String background = "~";
 // AV variables
 bool avActive = false;
 
-class CharteristicCallbacks : public BLECharacteristicCallbacks {
-    void onWrite(BLECharacteristic *pCharacteristic) {
-        std::string value = pCharacteristic->getValue();
-        if (value.length() > 0) {
-           handleBluetooth(value.c_str());
-        }
-    }
-};
-
-class ServerCallbacks : public BLEServerCallbacks {
-public:
-  void onConnect(BLEServer* pServer) {
-    // Handle the onConnect event (optional)
-    Serial.println("BLE client connected");
-  }
-
-  void onDisconnect(BLEServer* pServer) {
-    // Handle the onDisconnect event
-    Serial.println("BLE client disconnected");
-
-    // Perform any necessary cleanup or actions here
-
-    // Optionally restart the ESP32
-    ESP.restart();
-  }
-};
-
-
-void runBLEServer() {
-  BLEDevice::init("LED Panel");
-  // Create a BLE server
-  pServer = BLEDevice::createServer();
-    
-  pServer->setCallbacks(new ServerCallbacks());
-
-  // Create a BLE service
-  pService = pServer->createService("12345678-1234-5678-1234-56789abcdef0");
-  
-  // Create a BLE characteristic
-  pCharacteristic = pService->createCharacteristic(
-    "12345678-1234-5678-1234-56789abcdef1",
-    BLECharacteristic::PROPERTY_READ |
-    BLECharacteristic::PROPERTY_WRITE |
-    BLECharacteristic::PROPERTY_NOTIFY
-  );
-
-  pCharacteristic->setCallbacks(new CharteristicCallbacks());
-
-  BLEDescriptor* pStatusDescriptor = new BLEDescriptor(BLEUUID((uint16_t)0x2902));
-  pCharacteristic->addDescriptor(pStatusDescriptor);
-  pStatusDescriptor->setValue("Notify");
-  delay(100);
-  // Start the service
-  pService->start();
-
-  // Start advertising
-  BLEAdvertising *pAdvertising = pServer->getAdvertising();
-  pAdvertising->addServiceUUID(pService->getUUID());
-  pAdvertising->start();
-  delay(50);
-  Serial.println("BLE advertising started");
-
-}
-// Function handlers -------------------------
-TaskHandle_t ModeTaskHandle = NULL;
-
-void runMode(void *parameter) {
-   while (1) {
-    if (!runningFunction) {
-      if (playingAnim != "~") {
-        handleAnimPlay();
-      }
-      if (avActive) {
-         audioVisualizer(true);
-      }
-    }
-    vTaskDelay(pdMS_TO_TICKS(15));
-   }
-}
-
 void setup() { //Setup ---------------------------------------------------------------------------------------
+  bluetooth.begin(115200);
   Serial.begin(115200);
-
-  runBLEServer();
-
-  xTaskCreatePinnedToCore(
-    runMode,
-    "ModeTask",
-    10000,
-    NULL,
-    0,
-    &ModeTaskHandle,
-    0
-  );
-  vTaskStartScheduler();
 
   FastLED.addLeds<WS2812B, LEDPIN, GRB>(leds, WIDTH * HEIGHT);
 
   FastLED.setBrightness(100);
 
   randomSeed(analogRead(0));
+
   if (!SD.begin(chipSelect)) {
     Serial.println("SD card initialization failed!");
   } else {
     Serial.println("SD card intialized");
   }
+
 }
+
 void loop() {
+  handleBluetooth();
 }

@@ -18,8 +18,7 @@ void handleFrameSave(char charBuffer[20], bool animation) {
       Serial.println(String(nameString) + " created at: " + dirName);
     } else {
       Serial.println("Folder creation failed.");
-      pCharacteristic->setValue("failed");
-      pCharacteristic->notify();
+      bluetooth.print("failed");
       return;
     }
   } else if (animation) {
@@ -39,8 +38,7 @@ void handleFrameSave(char charBuffer[20], bool animation) {
   Serial.println(dirName + "/" + fileName);
   if (!file) {
     Serial.println("File creation failed!");
-    pCharacteristic->setValue("failed");
-    pCharacteristic->notify();
+    bluetooth.print("failed");
     return;
   } else {
     Serial.print("New File: ");
@@ -53,8 +51,7 @@ void handleFrameSave(char charBuffer[20], bool animation) {
   }
   file.close();
   Serial.println("Color data saved to SD card.");
-  pCharacteristic->setValue("success");
-  pCharacteristic->notify();
+  bluetooth.print("success");
 }
 
 
@@ -66,12 +63,10 @@ void handleFrameDelete(char charBuffer[20]) {
 
   if (SD.remove("/drawings/" + String(nameString) + "")) {
     Serial.println("File deleted: " + String(nameString));
-      pCharacteristic->setValue("success");
-      pCharacteristic->notify();
+    bluetooth.print("success");
     return;
   }
-  pCharacteristic->setValue("failed");
-  pCharacteristic->notify();
+  bluetooth.print("failed");
 }
 
 
@@ -93,13 +88,11 @@ void handleAnimDelete(char charBuffer[20]) {
   dir.close();
   if (SD.rmdir("/ANIMS/" + String(nameString))) {
     Serial.println("Folder deleted: " + String(nameString));
-    pCharacteristic->setValue("success");
-    pCharacteristic->notify();
+    bluetooth.print("success");
     return;
   }
   Serial.println("Folder delete failed: " + String(nameString));
-  pCharacteristic->setValue("failed");
-  pCharacteristic->notify();
+  bluetooth.print("failed");
 }
 
 
@@ -134,12 +127,10 @@ void sendFileNames(String dir, bool anims) {
       strcpy(fileName, file.name()); // copy the file name to a new char array
       if (anims) {
         String valueToSend = "." + String(fileName) + ",";
-        pCharacteristic->setValue(valueToSend.c_str());
-        pCharacteristic->notify();
+        bluetooth.print(valueToSend.c_str());
       } else {
         String valueToSend = String(fileName) + ",";
-        pCharacteristic->setValue(valueToSend.c_str());
-        pCharacteristic->notify();
+        bluetooth.print(valueToSend.c_str());
       }
       Serial.println(fileName);
       file.close();
