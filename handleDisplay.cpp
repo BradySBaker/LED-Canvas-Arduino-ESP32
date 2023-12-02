@@ -28,8 +28,8 @@ bool displayFrame(String dir) {
   file.close();
   // Update the LED panel with the new colors
   FastLED.show();
-  pCharacteristic->setValue("success");
-  pCharacteristic->notify();
+  // pCharacteristic->setValue("success");
+  // pCharacteristic->notify();
   return true;
 }
 
