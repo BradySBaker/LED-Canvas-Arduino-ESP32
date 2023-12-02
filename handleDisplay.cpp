@@ -115,4 +115,4 @@ void handleColorChange(char charBuffer[20], bool rainAudio) {
       pCharacteristic->setValue("success");
       pCharacteristic->notify();
   }
-}
+}//
