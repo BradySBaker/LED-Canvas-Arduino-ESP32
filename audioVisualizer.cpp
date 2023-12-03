@@ -64,7 +64,7 @@ void audioVisualizer(bool pixelFall) {
       newTime = micros();
       vReal[i] = analogRead(micPin);
       if (vReal[i] == 0) {
-        return;
+        continue;
       }
       vImag[i] = 0;
       while ((micros() - newTime) < sampling_period_us) { /* chill */ }
